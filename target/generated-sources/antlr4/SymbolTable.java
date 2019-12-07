@@ -71,6 +71,6 @@ public class SymbolTable {
     public Symbol getSymbol(int i)
     {
         return L.get(i);
-    }	
+    }		
 
 }

@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class Quad {
-    
+	
 	private ArrayList<String> vals = new ArrayList();
 
     public Quad(ArrayList<String> vals) {
@@ -16,7 +16,8 @@ public class Quad {
     	this.vals.add(3, arg4);
     }
 
-    public String get(int index)
+
+	public String get(int index)
     {
         return this.vals.get(index);
     }
@@ -31,5 +32,6 @@ public class Quad {
     {
         return "("+vals.get(0)+","+vals.get(1)+","+vals.get(2)+","+vals.get(3)+")";
     }
+	
 
 }

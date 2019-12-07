@@ -1,194 +1,196 @@
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.misc.NotNull;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class EvaluateVisitor extends averroesBaseVisitor<Value> {
+import org.antlr.v4.runtime.misc.NotNull;
+import org.antlr.v4.runtime.tree.ParseTree;
+
+public class EvaluateVisitor extends sjBaseVisitor<SJValue> {
 	
-    public static final double SMALL_VALUE = 0.00000000001;
+    public static final double SMALL_SJValue = 0.00000000001;
 
     // store variables (there's only one global scope!)
-    private Map<String, Value> memory = new HashMap<String, Value>();
+    private Map<String, SJValue> memory = new HashMap<String, SJValue>();
 
     // assignment/id overrides
     @Override
-    public Value visitAssignment(averroesParser.AssignmentContext ctx) {
+    public SJValue visitAssignment(sjParser.AssignmentContext ctx) {
         String id = ctx.ID().getText();
-        Value value = this.visit(ctx.expr());
-        return memory.put(id, value);
+        SJValue SJValue = this.visit(ctx.expr());
+        return memory.put(id, SJValue);
     }
     
     @Override
-    public Value visitIdAtom(averroesParser.IdAtomContext ctx) {
+    public SJValue visitIdAtom(sjParser.IdAtomContext ctx) {
         String id = ctx.getText();
-        Value value = memory.get(id);
-        if(value == null) {
+        SJValue SJValue = memory.get(id);
+        if(SJValue == null) {
             throw new RuntimeException("No such variable: " + id);
         }
-        return value;
+        return SJValue;
     }
     
     @Override
-    public Value visitStringAtom(averroesParser.StringAtomContext ctx) {
+    public SJValue visitStringAtom(sjParser.StringAtomContext ctx) {
         String str = ctx.getText();
         // strip quotes
         str = str.substring(1, str.length() - 1).replace("\"\"", "\"");
-        return new Value(str);
+        return new SJValue(str);
     }
     
     @Override
-    public Value visitNumberAtom(averroesParser.NumberAtomContext ctx) {
-        return new Value(Double.valueOf(ctx.getText()));
+    public SJValue visitNumberAtom(sjParser.NumberAtomContext ctx) {
+        return new SJValue(Double.valueOf(ctx.getText()));
     }
     
     @Override
-    public Value visitBooleanAtom(averroesParser.BooleanAtomContext ctx) {
-        return new Value(Boolean.valueOf(ctx.getText()));
+    public SJValue visitBooleanAtom(sjParser.BooleanAtomContext ctx) {
+        return new SJValue(Boolean.valueOf(ctx.getText()));
     }
     
     @Override
-    public Value visitNilAtom(averroesParser.NilAtomContext ctx) {
-        return new Value(null);
+    public SJValue visitNilAtom(sjParser.NilAtomContext ctx) {
+        return new SJValue(null);
     }
     
     @Override
-    public Value visitParExpr(averroesParser.ParExprContext ctx) {
+    public SJValue visitParExpr(sjParser.ParExprContext ctx) {
         return this.visit(ctx.expr());
     }
     
     @Override
-    public Value visitPowExpr(averroesParser.PowExprContext ctx) {
-        Value left = this.visit(ctx.expr(0));
-        Value right = this.visit(ctx.expr(1));
-        return new Value(Math.pow(left.asDouble(), right.asDouble()));
+    public SJValue visitPowExpr(sjParser.PowExprContext ctx) {
+        SJValue left = this.visit(ctx.expr(0));
+        SJValue right = this.visit(ctx.expr(1));
+        return new SJValue(Math.pow(left.asDouble(), right.asDouble()));
     }
     
     @Override
-    public Value visitUnaryMinusExpr(averroesParser.UnaryMinusExprContext ctx) {
-        Value value = this.visit(ctx.expr());
-        return new Value(-value.asDouble());
+    public SJValue visitUnaryMinusExpr(sjParser.UnaryMinusExprContext ctx) {
+        SJValue SJValue = this.visit(ctx.expr());
+        return new SJValue(-SJValue.asDouble());
     }
     
     @Override
-    public Value visitNotExpr(averroesParser.NotExprContext ctx) {
-        Value value = this.visit(ctx.expr());
-        return new Value(!value.asBoolean());
+    public SJValue visitNotExpr(sjParser.NotExprContext ctx) {
+        SJValue SJValue = this.visit(ctx.expr());
+        return new SJValue(!SJValue.asBoolean());
     }
     
     @Override
-    public Value visitMultiplicationExpr(@NotNull averroesParser.MultiplicationExprContext ctx) {
+    public SJValue visitMultiplicationExpr(@NotNull sjParser.MultiplicationExprContext ctx) {
 
-        Value left = this.visit(ctx.expr(0));
-        Value right = this.visit(ctx.expr(1));
+        SJValue left = this.visit(ctx.expr(0));
+        SJValue right = this.visit(ctx.expr(1));
 
         switch (ctx.op.getType()) {
-            case averroesParser.MULT:
-                return new Value(left.asDouble() * right.asDouble());
-            case averroesParser.DIV:
+            case sjParser.MULT:
+                return new SJValue(left.asDouble() * right.asDouble());
+            case sjParser.DIV:
             	if(right.asDouble() == 0.00) {
                     throw new RuntimeException("Division by Zero Exception at line");            		
             	}            	
-                return new Value(left.asDouble() / right.asDouble());
+                return new SJValue(left.asDouble() / right.asDouble());
                 
-            case averroesParser.MOD:
-                return new Value(left.asDouble() % right.asDouble());
+            case sjParser.MOD:
+                return new SJValue(left.asDouble() % right.asDouble());
             default:
-                throw new RuntimeException("Unknown operator: " + averroesParser.tokenNames[ctx.op.getType()]);
+                throw new RuntimeException("Unknown operator: " + sjParser.tokenNames[ctx.op.getType()]);
         }
     }
     
     @Override
-    public Value visitAdditiveExpr(@NotNull averroesParser.AdditiveExprContext ctx) {
+    public SJValue visitAdditiveExpr(@NotNull sjParser.AdditiveExprContext ctx) {
 
-        Value left = this.visit(ctx.expr(0));
-        Value right = this.visit(ctx.expr(1));
+        SJValue left = this.visit(ctx.expr(0));
+        SJValue right = this.visit(ctx.expr(1));
 
         switch (ctx.op.getType()) {
-            case averroesParser.PLUS:
+            case sjParser.PLUS:
                 return left.isDouble() && right.isDouble() ?
-                        new Value(left.asDouble() + right.asDouble()) :
-                        new Value(left.asString() + right.asString());
-            case averroesParser.MINUS:
-                return new Value(left.asDouble() - right.asDouble());
+                        new SJValue(left.asDouble() + right.asDouble()) :
+                        new SJValue(left.asString() + right.asString());
+            case sjParser.MINUS:
+                return new SJValue(left.asDouble() - right.asDouble());
             default:
-                throw new RuntimeException("unknown operator: " + averroesParser.tokenNames[ctx.op.getType()]);
+                throw new RuntimeException("unknown operator: " + sjParser.tokenNames[ctx.op.getType()]);
         }
     }
     
     @Override
-    public Value visitRelationalExpr(@NotNull averroesParser.RelationalExprContext ctx) {
+    public SJValue visitRelationalExpr(@NotNull sjParser.RelationalExprContext ctx) {
 
-        Value left = this.visit(ctx.expr(0));
-        Value right = this.visit(ctx.expr(1));
+        SJValue left = this.visit(ctx.expr(0));
+        SJValue right = this.visit(ctx.expr(1));
 
         switch (ctx.op.getType()) {
-            case averroesParser.LT:
-                return new Value(left.asDouble() < right.asDouble());
-            case averroesParser.LTEQ:
-                return new Value(left.asDouble() <= right.asDouble());
-            case averroesParser.GT:
-                return new Value(left.asDouble() > right.asDouble());
-            case averroesParser.GTEQ:
-                return new Value(left.asDouble() >= right.asDouble());
+            case sjParser.LT:
+                return new SJValue(left.asDouble() < right.asDouble());
+            case sjParser.LTEQ:
+                return new SJValue(left.asDouble() <= right.asDouble());
+            case sjParser.GT:
+                return new SJValue(left.asDouble() > right.asDouble());
+            case sjParser.GTEQ:
+                return new SJValue(left.asDouble() >= right.asDouble());
             default:
-                throw new RuntimeException("Unknown operator: " + averroesParser.tokenNames[ctx.op.getType()]);
+                throw new RuntimeException("Unknown operator: " + sjParser.tokenNames[ctx.op.getType()]);
         }
     }
     
     @Override
-    public Value visitEqualityExpr(@NotNull averroesParser.EqualityExprContext ctx) {
+    public SJValue visitEqualityExpr(@NotNull sjParser.EqualityExprContext ctx) {
 
-        Value left = this.visit(ctx.expr(0));
-        Value right = this.visit(ctx.expr(1));
+        SJValue left = this.visit(ctx.expr(0));
+        SJValue right = this.visit(ctx.expr(1));
 
         switch (ctx.op.getType()) {
-            case averroesParser.EQ:
+            case sjParser.EQ:
                 return left.isDouble() && right.isDouble() ?
-                        new Value(Math.abs(left.asDouble() - right.asDouble()) < SMALL_VALUE) :
-                        new Value(left.equals(right));
-            case averroesParser.NEQ:
+                        new SJValue(Math.abs(left.asDouble() - right.asDouble()) < SMALL_SJValue) :
+                        new SJValue(left.equals(right));
+            case sjParser.NEQ:
                 return left.isDouble() && right.isDouble() ?
-                        new Value(Math.abs(left.asDouble() - right.asDouble()) >= SMALL_VALUE) :
-                        new Value(!left.equals(right));
+                        new SJValue(Math.abs(left.asDouble() - right.asDouble()) >= SMALL_SJValue) :
+                        new SJValue(!left.equals(right));
             default:
-                throw new RuntimeException("Unknown operator: " + averroesParser.tokenNames[ctx.op.getType()]);
+                throw new RuntimeException("Unknown operator: " + sjParser.tokenNames[ctx.op.getType()]);
         }
     }
     
     @Override
-    public Value visitAndExpr(averroesParser.AndExprContext ctx) {
-        Value left = this.visit(ctx.expr(0));
-        Value right = this.visit(ctx.expr(1));
-        return new Value(left.asBoolean() && right.asBoolean());
+    public SJValue visitAndExpr(sjParser.AndExprContext ctx) {
+        SJValue left = this.visit(ctx.expr(0));
+        SJValue right = this.visit(ctx.expr(1));
+        return new SJValue(left.asBoolean() && right.asBoolean());
     }
 
     @Override
-    public Value visitOrExpr(averroesParser.OrExprContext ctx) {
-        Value left = this.visit(ctx.expr(0));
-        Value right = this.visit(ctx.expr(1));
-        return new Value(left.asBoolean() || right.asBoolean());
+    public SJValue visitOrExpr(sjParser.OrExprContext ctx) {
+        SJValue left = this.visit(ctx.expr(0));
+        SJValue right = this.visit(ctx.expr(1));
+        return new SJValue(left.asBoolean() || right.asBoolean());
     }
     
     @Override
-    public Value visitOutput(averroesParser.OutputContext ctx) {
-        Value value = this.visit(ctx.expr());
-        System.out.println(value);
-        return value;
+    public SJValue visitOutput(sjParser.OutputContext ctx) {
+        SJValue SJValue = this.visit(ctx.TEXT());
+        System.out.println(SJValue);
+        return SJValue;
     }
     
     // if override
+    
+    /*
     @Override
-    public Value visitIf_statement(averroesParser.If_statementContext ctx) {
+    public SJValue visitIf_statement(sjParser.If_statementContext ctx) {
 
-        List<averroesParser.Condition_blockContext> conditions =  ctx.condition_block();
+        List<sjParser.Condition_blockContext> conditions =  ctx.condition_block();
 
         boolean evaluatedBlock = false;
 
-        for(averroesParser.Condition_blockContext condition : conditions) {
+        for(sjParser.Condition_blockContext condition : conditions) {
 
-            Value evaluated = this.visit(condition.expr());
+            SJValue evaluated = this.visit(condition.expr());
 
             if(evaluated.asBoolean()) {
                 evaluatedBlock = true;
@@ -196,34 +198,13 @@ public class EvaluateVisitor extends averroesBaseVisitor<Value> {
                 this.visit(condition.statement_block());
                 break;
             }
-        }
+        }	
 
         if(!evaluatedBlock && ctx.statement_block() != null) {
-            // evaluate the else-stat_block (if present == not null)
-            this.visit(ctx.statement_block());
+            this.visit(ctx.statement_block(0));
         }
 
-        return Value.VOID;
-    }
-    
-    // while override
-    @Override
-    public Value visitWhile_statement(averroesParser.While_statementContext ctx) {
-
-        Value value = this.visit(ctx.expr());
-
-        while(value.asBoolean()) {
-
-            // evaluate the code block
-            this.visit(ctx.statement_block());
-
-            // evaluate the expression
-            value = this.visit(ctx.expr());
-        }
-
-        return Value.VOID;
-    }
-    
-    
+        return SJValue.VOID;
+    }	*/
 
 }
