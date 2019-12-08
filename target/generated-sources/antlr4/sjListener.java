@@ -47,6 +47,16 @@ public interface sjListener extends ParseTreeListener {
 	 */
 	void exitLibraries(sjParser.LibrariesContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link sjParser#bibname}.
+	 * @param ctx the parse tree
+	 */
+	void enterBibname(sjParser.BibnameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link sjParser#bibname}.
+	 * @param ctx the parse tree
+	 */
+	void exitBibname(sjParser.BibnameContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link sjParser#klass}.
 	 * @param ctx the parse tree
 	 */

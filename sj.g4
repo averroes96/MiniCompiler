@@ -17,10 +17,15 @@ block
  ;
 
 libraries
- : IMPORT 'small_java.lang' SCOL libraries
- | IMPORT 'small_java.io' SCOL libraries
+ : 'import' bibname SCOL libraries
  |
  ;
+ 
+bibname
+ : IMPORTLANG
+ | IMPORTIO
+ ;
+ 
  
  klass
  : 'class_SJ' ID        
@@ -147,8 +152,8 @@ DEC : 'declare';
 BEGIN : 'begin';
 END : 'end';
 IMPORT : 'import';
-SJLANG : 'small_java.lang';
-SJIO : 'small_java.io';
+IMPORTLANG : 'small_java.lang';
+IMPORTIO : 'small_java.io';
 SJCLASS : 'class_SJ';
 PROTECTED : 'protected';
 PUBLIC : 'public';
@@ -167,11 +172,11 @@ ID
   
 
 INT
- : [0-9]+
+ : [+-]*[0-9]+
  ;
 
 FLOAT
- : [0-9]+ '.' [0-9]* 
+ : [+-]*[0-9]+ '.' [0-9]* 
  | '.' [0-9]+
  ;
 

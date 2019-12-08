@@ -34,6 +34,12 @@ public interface sjVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLibraries(sjParser.LibrariesContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link sjParser#bibname}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBibname(sjParser.BibnameContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link sjParser#klass}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

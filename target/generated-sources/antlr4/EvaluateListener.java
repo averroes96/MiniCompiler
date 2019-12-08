@@ -12,6 +12,8 @@ public class EvaluateListener extends sjBaseListener{
     private SymbolTable table = new SymbolTable();
     private LinkedList<String> errors = new LinkedList<>();
     private HashMap<ParserRuleContext,Integer> types = new HashMap<>();
+    private int lang = 0;
+    private int io = 0;
     
     public LinkedList<String> getErrors() {
         return errors;
@@ -65,6 +67,50 @@ public class EvaluateListener extends sjBaseListener{
         
     }
 
+    @Override public void exitLibraries(sjParser.LibrariesContext ctx) {
+    	
+    	String bibname = ctx.bibname().getText();
+    	
+    	if(bibname.equals("small_java.lang"))
+    		lang = 1;
+    	else if(bibname.equals("small_java.io"))
+    		io = 1;
+    	else
+    		errors.add("No such library name : " + bibname);
+	
+    }
+    
+    @Override public void exitAssignment(sjParser.AssignmentContext ctx) {
+    	
+    	String id = ctx.ID().getText();
+    	if(!table.containsSymbol(id)) {
+    		errors.add("Variable " + id + " has not been declared");
+    		table.addSymbol(new SymbolTable.Symbol(id,UNDECLARED,INT|FLOAT,1));
+    		// to not generate the same error
+    	}
+        if(!typesCompatible(getCtxType(ctx.expr()),table.getSymbol(id).type)) {
+            errors.add("Incompatible types in affectation " + ctx.getText());
+        	clearMap();
+        }
+    	
+    }
+    
+    private static boolean typesCompatible(int t1,int t2)
+    {
+        return (t1 & t2) != 0;
+    }
+    
+    private void clearMap()
+    {
+        types.clear();
+    }
+    
+    private int getCtxType(ParserRuleContext ctx)
+    {
+        return types.get(ctx);
+    }    
+    
+    
         
     
     

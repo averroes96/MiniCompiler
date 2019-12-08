@@ -63,6 +63,18 @@ public class sjBaseListener implements sjListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterBibname(sjParser.BibnameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBibname(sjParser.BibnameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterKlass(sjParser.KlassContext ctx) { }
 	/**
 	 * {@inheritDoc}
