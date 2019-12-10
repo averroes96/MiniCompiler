@@ -8,6 +8,7 @@ public class EvaluateListener extends sjBaseListener{
     private static final int UNDECLARED = 2;
     private static final int FLOAT = 2;
     private static final int INT = 1;
+    private static final int STRING = 3;    
 
     private SymbolTable table = new SymbolTable();
     private LinkedList<String> errors = new LinkedList<>();
@@ -82,6 +83,8 @@ public class EvaluateListener extends sjBaseListener{
     
     @Override public void exitAssignment(sjParser.AssignmentContext ctx) {
     	
+    	if(lang == 1) {
+    	
     	String id = ctx.ID().getText();
     	if(!table.containsSymbol(id)) {
     		errors.add("Variable " + id + " has not been declared");
@@ -92,8 +95,69 @@ public class EvaluateListener extends sjBaseListener{
             errors.add("Incompatible types in affectation " + ctx.getText());
         	clearMap();
         }
+        
+    	}
+    	else {
+    		errors.add("Library small_java.lang is not defined !");
+    		System.exit(0);
+    	}
     	
     }
+    
+    @Override public void exitIf_statement(sjParser.If_statementContext ctx) {
+    	
+    	if(lang == 0) {
+    		errors.add("Library small_java.lang is not defined !");
+    		System.exit(0);    		
+    	}
+    	
+    }
+    
+    @Override public void exitOutput(sjParser.OutputContext ctx) {
+    	
+    	if(io == 0) {
+    		errors.add("Library small_java.io is not defined !");
+    		System.exit(0);    		
+    	}
+    	
+    }
+    
+    @Override public void exitInput(sjParser.InputContext ctx) {
+    	
+    	String ID = ctx.ID().getText();
+    	
+    	if(io == 0) {
+    		errors.add("Library small_java.io is not defined !");
+    		System.exit(0);    		
+    	}
+    	if(!table.containsSymbol(ID)) {
+    		errors.add("Variable " + ID + " has not been declared");
+    		table.addSymbol(new SymbolTable.Symbol(ID,UNDECLARED,INT|FLOAT|STRING,1));
+    		// to not generate the same error
+    	}
+    	else {
+    		if(ctx.format().getText().equals("int_sj")) {
+    			if(table.getSymbol(ID).type != INT) {
+    				errors.add("Incompatible types conversion for variable : " + ID);
+    			}
+
+    		}
+    		if(ctx.format().getText().equals("float_sj")) {
+    			if(table.getSymbol(ID).type != FLOAT) {
+    				errors.add("Incompatible types conversion for variable : " + ID);
+    			}
+    		}
+    		if(ctx.format().getText().equals("string_sj")) {
+    			if(table.getSymbol(ID).type != STRING) {
+    				errors.add("Incompatible types conversion for variable : " + ID);
+    			}
+    		}
+    		
+    	}
+    	
+    }    
+    
+    
     
     private static boolean typesCompatible(int t1,int t2)
     {
@@ -109,10 +173,6 @@ public class EvaluateListener extends sjBaseListener{
     {
         return types.get(ctx);
     }    
-    
-    
-        
-    
-    
 
+    
 }
