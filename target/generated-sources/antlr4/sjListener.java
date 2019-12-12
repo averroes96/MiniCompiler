@@ -17,6 +17,16 @@ public interface sjListener extends ParseTreeListener {
 	 */
 	void exitProgram(sjParser.ProgramContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link sjParser#libraries}.
+	 * @param ctx the parse tree
+	 */
+	void enterLibraries(sjParser.LibrariesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link sjParser#libraries}.
+	 * @param ctx the parse tree
+	 */
+	void exitLibraries(sjParser.LibrariesContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link sjParser#main_sj}.
 	 * @param ctx the parse tree
 	 */
@@ -36,16 +46,6 @@ public interface sjListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBlock(sjParser.BlockContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sjParser#libraries}.
-	 * @param ctx the parse tree
-	 */
-	void enterLibraries(sjParser.LibrariesContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sjParser#libraries}.
-	 * @param ctx the parse tree
-	 */
-	void exitLibraries(sjParser.LibrariesContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link sjParser#bibname}.
 	 * @param ctx the parse tree
@@ -166,6 +166,26 @@ public interface sjListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitOutput(sjParser.OutputContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link sjParser#content}.
+	 * @param ctx the parse tree
+	 */
+	void enterContent(sjParser.ContentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link sjParser#content}.
+	 * @param ctx the parse tree
+	 */
+	void exitContent(sjParser.ContentContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link sjParser#varText}.
+	 * @param ctx the parse tree
+	 */
+	void enterVarText(sjParser.VarTextContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link sjParser#varText}.
+	 * @param ctx the parse tree
+	 */
+	void exitVarText(sjParser.VarTextContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link sjParser#input}.
 	 * @param ctx the parse tree

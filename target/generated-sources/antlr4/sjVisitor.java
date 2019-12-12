@@ -16,6 +16,12 @@ public interface sjVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitProgram(sjParser.ProgramContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link sjParser#libraries}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLibraries(sjParser.LibrariesContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link sjParser#main_sj}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -27,12 +33,6 @@ public interface sjVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitBlock(sjParser.BlockContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link sjParser#libraries}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLibraries(sjParser.LibrariesContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link sjParser#bibname}.
 	 * @param ctx the parse tree
@@ -105,6 +105,18 @@ public interface sjVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitOutput(sjParser.OutputContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link sjParser#content}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitContent(sjParser.ContentContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link sjParser#varText}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVarText(sjParser.VarTextContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link sjParser#input}.
 	 * @param ctx the parse tree

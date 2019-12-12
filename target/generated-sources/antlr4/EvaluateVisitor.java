@@ -171,13 +171,7 @@ public class EvaluateVisitor extends sjBaseVisitor<SJValue> {
         return new SJValue(left.asBoolean() || right.asBoolean());
     }
     
-    @Override
-    public SJValue visitOutput(sjParser.OutputContext ctx) {
-        SJValue SJValue = this.visit(ctx.TEXT());
-        System.out.println(SJValue);
-        return SJValue;
-    }
-    
+
     // if override
     
     /*

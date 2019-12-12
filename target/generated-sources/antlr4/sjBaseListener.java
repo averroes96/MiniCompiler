@@ -27,6 +27,18 @@ public class sjBaseListener implements sjListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterLibraries(sjParser.LibrariesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLibraries(sjParser.LibrariesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterMain_sj(sjParser.Main_sjContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -46,18 +58,6 @@ public class sjBaseListener implements sjListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBlock(sjParser.BlockContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterLibraries(sjParser.LibrariesContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLibraries(sjParser.LibrariesContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -202,6 +202,30 @@ public class sjBaseListener implements sjListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitOutput(sjParser.OutputContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterContent(sjParser.ContentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitContent(sjParser.ContentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVarText(sjParser.VarTextContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVarText(sjParser.VarTextContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

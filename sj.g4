@@ -4,8 +4,12 @@
 grammar sj;
 // the general grammar syntax
 program
- : libraries klass OBRACE varDec main_sj CBRACE EOF
+ : libraries* klass OBRACE varDec main_sj CBRACE EOF
  ;
+ 
+libraries
+ : 'import' bibname SCOL
+ ; 
  
 main_sj
  : 'main_SJ' OBRACE block CBRACE
@@ -16,10 +20,6 @@ block
  : statement*
  ;
 
-libraries
- : 'import' bibname SCOL libraries
- |
- ;
  
 bibname
  : IMPORTLANG
@@ -33,14 +33,13 @@ bibname
  ;
  
  varDec
- : type ID SCOL varDec
- | type ID ',' variables SCOL varDec
+ : type variables SCOL varDec
  |
  ;
  
  variables
- : ID variables
- |
+ : ID
+ | ID ',' variables
  ;
  
  type
@@ -81,9 +80,18 @@ statement_block
  ;
 
 output
- : 'Out_SJ' OPAR TEXT ',' ID CPAR SCOL
- | 'Out_SJ' OPAR TEXT CPAR SCOL
+ : 'Out_SJ' OPAR content  CPAR SCOL
  ;
+ 
+content
+ : TEXT
+ | varText
+ ;
+ 
+varText
+ : TEXT ',' ID
+ ; 
+  
  
 input
  : 'In_SJ' OPAR '"' format '",' ID OPAR SCOL

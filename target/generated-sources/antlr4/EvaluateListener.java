@@ -22,6 +22,10 @@ public class EvaluateListener extends sjBaseListener{
     
     @Override public void exitProgram(sjParser.ProgramContext ctx)
     {
+    	if(!Character.isUpperCase(ctx.klass().ID().getText().charAt(0))) {
+    		errors.add("Class name must start with a capital letter !");
+    	}
+    	
         if(errors.size() == 0) { // no errors
             System.out.println("Program compiled without errors!");
             System.out.println("\nsymbols table: ");
@@ -54,7 +58,7 @@ public class EvaluateListener extends sjBaseListener{
 
         sjParser.VariablesContext vars = ctx.variables() ;
 
-        for (;;vars = vars.variables()) // loop over vars
+        for (;;vars = vars.variables()) // loop over variables
         {
             String varName = vars.getChild(0).getText();
             if(table.containsSymbol(varName)) {
@@ -121,6 +125,37 @@ public class EvaluateListener extends sjBaseListener{
     	}
     	
     }
+    
+    @Override public void exitVarText(sjParser.VarTextContext ctx) {
+    	
+    	String text = ctx.TEXT().getText();
+    	String ID = ctx.ID().getText();
+    	
+    	if(!table.containsSymbol(ID)) {
+    		errors.add("Variable " + ID + " has not been declared");
+    		table.addSymbol(new SymbolTable.Symbol(ID,UNDECLARED,INT|FLOAT|STRING,1));
+    		// to not generate the same error
+    	}
+    	else {
+    		if(table.getSymbol(ID).type == INT) {
+    			if(!text.contains("%d")) {
+    				errors.add("Incompatible type conversion ! " + ID + " is of type INT");
+    			}
+    		}
+    		if(table.getSymbol(ID).type == FLOAT) {
+    			if(!text.contains("%f")) {
+    				errors.add("Incompatible type conversion ! " + ID + " is of type FLOAT");
+    			}
+    		}
+    		if(table.getSymbol(ID).type == STRING) {
+    			if(!text.contains("%s")) {
+    				errors.add("Incompatible type conversion ! " + ID + " is of type STRING");
+    			}
+    		}     		
+    	}
+    	
+    	
+    }    
     
     @Override public void exitInput(sjParser.InputContext ctx) {
     	
