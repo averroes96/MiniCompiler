@@ -88,6 +88,12 @@ public interface sjVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIf_statement(sjParser.If_statementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link sjParser#els}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEls(sjParser.ElsContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link sjParser#condition_block}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -130,115 +136,39 @@ public interface sjVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFormat(sjParser.FormatContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code notExpr}
-	 * labeled alternative in {@link sjParser#expr}.
+	 * Visit a parse tree produced by {@link sjParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitNotExpr(sjParser.NotExprContext ctx);
+	T visitExpr(sjParser.ExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code unaryMinusExpr}
-	 * labeled alternative in {@link sjParser#expr}.
+	 * Visit a parse tree produced by {@link sjParser#t}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitUnaryMinusExpr(sjParser.UnaryMinusExprContext ctx);
+	T visitT(sjParser.TContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code multiplicationExpr}
-	 * labeled alternative in {@link sjParser#expr}.
+	 * Visit a parse tree produced by {@link sjParser#op1}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMultiplicationExpr(sjParser.MultiplicationExprContext ctx);
+	T visitOp1(sjParser.Op1Context ctx);
 	/**
-	 * Visit a parse tree produced by the {@code atomExpr}
-	 * labeled alternative in {@link sjParser#expr}.
+	 * Visit a parse tree produced by {@link sjParser#op2}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitAtomExpr(sjParser.AtomExprContext ctx);
+	T visitOp2(sjParser.Op2Context ctx);
 	/**
-	 * Visit a parse tree produced by the {@code orExpr}
-	 * labeled alternative in {@link sjParser#expr}.
+	 * Visit a parse tree produced by {@link sjParser#endEx}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitOrExpr(sjParser.OrExprContext ctx);
+	T visitEndEx(sjParser.EndExContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code additiveExpr}
-	 * labeled alternative in {@link sjParser#expr}.
+	 * Visit a parse tree produced by {@link sjParser#terminal}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitAdditiveExpr(sjParser.AdditiveExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code powExpr}
-	 * labeled alternative in {@link sjParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitPowExpr(sjParser.PowExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code relationalExpr}
-	 * labeled alternative in {@link sjParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitRelationalExpr(sjParser.RelationalExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code equalityExpr}
-	 * labeled alternative in {@link sjParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitEqualityExpr(sjParser.EqualityExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code andExpr}
-	 * labeled alternative in {@link sjParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAndExpr(sjParser.AndExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code parExpr}
-	 * labeled alternative in {@link sjParser#atom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitParExpr(sjParser.ParExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code numberAtom}
-	 * labeled alternative in {@link sjParser#atom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNumberAtom(sjParser.NumberAtomContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code booleanAtom}
-	 * labeled alternative in {@link sjParser#atom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBooleanAtom(sjParser.BooleanAtomContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code idAtom}
-	 * labeled alternative in {@link sjParser#atom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIdAtom(sjParser.IdAtomContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code stringAtom}
-	 * labeled alternative in {@link sjParser#atom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStringAtom(sjParser.StringAtomContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code nilAtom}
-	 * labeled alternative in {@link sjParser#atom}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNilAtom(sjParser.NilAtomContext ctx);
+	T visitTerminal(sjParser.TerminalContext ctx);
 }

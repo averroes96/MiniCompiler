@@ -137,6 +137,16 @@ public interface sjListener extends ParseTreeListener {
 	 */
 	void exitIf_statement(sjParser.If_statementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link sjParser#els}.
+	 * @param ctx the parse tree
+	 */
+	void enterEls(sjParser.ElsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link sjParser#els}.
+	 * @param ctx the parse tree
+	 */
+	void exitEls(sjParser.ElsContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link sjParser#condition_block}.
 	 * @param ctx the parse tree
 	 */
@@ -207,195 +217,63 @@ public interface sjListener extends ParseTreeListener {
 	 */
 	void exitFormat(sjParser.FormatContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code notExpr}
-	 * labeled alternative in {@link sjParser#expr}.
+	 * Enter a parse tree produced by {@link sjParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterNotExpr(sjParser.NotExprContext ctx);
+	void enterExpr(sjParser.ExprContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code notExpr}
-	 * labeled alternative in {@link sjParser#expr}.
+	 * Exit a parse tree produced by {@link sjParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitNotExpr(sjParser.NotExprContext ctx);
+	void exitExpr(sjParser.ExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code unaryMinusExpr}
-	 * labeled alternative in {@link sjParser#expr}.
+	 * Enter a parse tree produced by {@link sjParser#t}.
 	 * @param ctx the parse tree
 	 */
-	void enterUnaryMinusExpr(sjParser.UnaryMinusExprContext ctx);
+	void enterT(sjParser.TContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code unaryMinusExpr}
-	 * labeled alternative in {@link sjParser#expr}.
+	 * Exit a parse tree produced by {@link sjParser#t}.
 	 * @param ctx the parse tree
 	 */
-	void exitUnaryMinusExpr(sjParser.UnaryMinusExprContext ctx);
+	void exitT(sjParser.TContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code multiplicationExpr}
-	 * labeled alternative in {@link sjParser#expr}.
+	 * Enter a parse tree produced by {@link sjParser#op1}.
 	 * @param ctx the parse tree
 	 */
-	void enterMultiplicationExpr(sjParser.MultiplicationExprContext ctx);
+	void enterOp1(sjParser.Op1Context ctx);
 	/**
-	 * Exit a parse tree produced by the {@code multiplicationExpr}
-	 * labeled alternative in {@link sjParser#expr}.
+	 * Exit a parse tree produced by {@link sjParser#op1}.
 	 * @param ctx the parse tree
 	 */
-	void exitMultiplicationExpr(sjParser.MultiplicationExprContext ctx);
+	void exitOp1(sjParser.Op1Context ctx);
 	/**
-	 * Enter a parse tree produced by the {@code atomExpr}
-	 * labeled alternative in {@link sjParser#expr}.
+	 * Enter a parse tree produced by {@link sjParser#op2}.
 	 * @param ctx the parse tree
 	 */
-	void enterAtomExpr(sjParser.AtomExprContext ctx);
+	void enterOp2(sjParser.Op2Context ctx);
 	/**
-	 * Exit a parse tree produced by the {@code atomExpr}
-	 * labeled alternative in {@link sjParser#expr}.
+	 * Exit a parse tree produced by {@link sjParser#op2}.
 	 * @param ctx the parse tree
 	 */
-	void exitAtomExpr(sjParser.AtomExprContext ctx);
+	void exitOp2(sjParser.Op2Context ctx);
 	/**
-	 * Enter a parse tree produced by the {@code orExpr}
-	 * labeled alternative in {@link sjParser#expr}.
+	 * Enter a parse tree produced by {@link sjParser#endEx}.
 	 * @param ctx the parse tree
 	 */
-	void enterOrExpr(sjParser.OrExprContext ctx);
+	void enterEndEx(sjParser.EndExContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code orExpr}
-	 * labeled alternative in {@link sjParser#expr}.
+	 * Exit a parse tree produced by {@link sjParser#endEx}.
 	 * @param ctx the parse tree
 	 */
-	void exitOrExpr(sjParser.OrExprContext ctx);
+	void exitEndEx(sjParser.EndExContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code additiveExpr}
-	 * labeled alternative in {@link sjParser#expr}.
+	 * Enter a parse tree produced by {@link sjParser#terminal}.
 	 * @param ctx the parse tree
 	 */
-	void enterAdditiveExpr(sjParser.AdditiveExprContext ctx);
+	void enterTerminal(sjParser.TerminalContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code additiveExpr}
-	 * labeled alternative in {@link sjParser#expr}.
+	 * Exit a parse tree produced by {@link sjParser#terminal}.
 	 * @param ctx the parse tree
 	 */
-	void exitAdditiveExpr(sjParser.AdditiveExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code powExpr}
-	 * labeled alternative in {@link sjParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterPowExpr(sjParser.PowExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code powExpr}
-	 * labeled alternative in {@link sjParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitPowExpr(sjParser.PowExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code relationalExpr}
-	 * labeled alternative in {@link sjParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterRelationalExpr(sjParser.RelationalExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code relationalExpr}
-	 * labeled alternative in {@link sjParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitRelationalExpr(sjParser.RelationalExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code equalityExpr}
-	 * labeled alternative in {@link sjParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterEqualityExpr(sjParser.EqualityExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code equalityExpr}
-	 * labeled alternative in {@link sjParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitEqualityExpr(sjParser.EqualityExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code andExpr}
-	 * labeled alternative in {@link sjParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterAndExpr(sjParser.AndExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code andExpr}
-	 * labeled alternative in {@link sjParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitAndExpr(sjParser.AndExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code parExpr}
-	 * labeled alternative in {@link sjParser#atom}.
-	 * @param ctx the parse tree
-	 */
-	void enterParExpr(sjParser.ParExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code parExpr}
-	 * labeled alternative in {@link sjParser#atom}.
-	 * @param ctx the parse tree
-	 */
-	void exitParExpr(sjParser.ParExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code numberAtom}
-	 * labeled alternative in {@link sjParser#atom}.
-	 * @param ctx the parse tree
-	 */
-	void enterNumberAtom(sjParser.NumberAtomContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code numberAtom}
-	 * labeled alternative in {@link sjParser#atom}.
-	 * @param ctx the parse tree
-	 */
-	void exitNumberAtom(sjParser.NumberAtomContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code booleanAtom}
-	 * labeled alternative in {@link sjParser#atom}.
-	 * @param ctx the parse tree
-	 */
-	void enterBooleanAtom(sjParser.BooleanAtomContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code booleanAtom}
-	 * labeled alternative in {@link sjParser#atom}.
-	 * @param ctx the parse tree
-	 */
-	void exitBooleanAtom(sjParser.BooleanAtomContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code idAtom}
-	 * labeled alternative in {@link sjParser#atom}.
-	 * @param ctx the parse tree
-	 */
-	void enterIdAtom(sjParser.IdAtomContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code idAtom}
-	 * labeled alternative in {@link sjParser#atom}.
-	 * @param ctx the parse tree
-	 */
-	void exitIdAtom(sjParser.IdAtomContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code stringAtom}
-	 * labeled alternative in {@link sjParser#atom}.
-	 * @param ctx the parse tree
-	 */
-	void enterStringAtom(sjParser.StringAtomContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code stringAtom}
-	 * labeled alternative in {@link sjParser#atom}.
-	 * @param ctx the parse tree
-	 */
-	void exitStringAtom(sjParser.StringAtomContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code nilAtom}
-	 * labeled alternative in {@link sjParser#atom}.
-	 * @param ctx the parse tree
-	 */
-	void enterNilAtom(sjParser.NilAtomContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code nilAtom}
-	 * labeled alternative in {@link sjParser#atom}.
-	 * @param ctx the parse tree
-	 */
-	void exitNilAtom(sjParser.NilAtomContext ctx);
+	void exitTerminal(sjParser.TerminalContext ctx);
 }

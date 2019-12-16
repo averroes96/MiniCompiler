@@ -4,7 +4,7 @@
 grammar sj;
 // the general grammar syntax
 program
- : libraries* klass OBRACE varDec main_sj CBRACE EOF
+ : libraries* klass OBRACE varDec* main_sj CBRACE EOF
  ;
  
 libraries
@@ -33,8 +33,7 @@ bibname
  ;
  
  varDec
- : type variables SCOL varDec
- |
+ : type variables SCOL
  ;
  
  variables
@@ -67,8 +66,12 @@ assignment
  ;
 
 if_statement
- : 'Si' condition_block ('Sinon' statement_block)*
+ : 'Si' condition_block ( els statement_block)*
  ;
+ 
+els 
+ : 'Sinon'
+ ; 
 
 condition_block
  : expr 'Alors' statement_block
@@ -102,32 +105,42 @@ format
  | FLOAT_SJ
  | STRING_SJ
  ;  
-
-expr
- : expr POW<assoc=right> expr           #powExpr
- | MINUS expr                           #unaryMinusExpr
- | NOT expr                             #notExpr
- | expr op=(MULT | DIV | MOD) expr      #multiplicationExpr
- | expr op=(PLUS | MINUS) expr          #additiveExpr
- | expr op=(LTEQ | GTEQ | LT | GT) expr #relationalExpr
- | expr op=(EQ | NEQ) expr              #equalityExpr
- | expr AND expr                        #andExpr
- | expr OR expr                         #orExpr
- | atom                                 #atomExpr
+ 
+expr 
+ : expr op1 t 
+ | t
  ;
-
-atom
- : OPAR expr CPAR #parExpr
- | (INT | FLOAT)  #numberAtom
- | (TRUE | FALSE) #booleanAtom
- | ID             #idAtom
- | TEXT         #stringAtom
- | NIL            #nilAtom
+ 
+t 
+ : t op2 endEx 
+ | endEx
  ;
+ 
+op1 
+ : PLUS 
+ | MINUS 
+ ;
+ 
+op2 
+ : MULT 
+ | DIV 
+ | MOD
+ ;
+ 
+endEx 
+ : ID 
+ | '(' expr ')' 
+ | terminal 
+ ;
+ 
+terminal 
+ :ID
+ |INT | FLOAT | STRING 
+ ; 
 
 OR : '||';
 AND : '&&';
-EQ : '==';
+EQ : '=';
 NEQ : '!=';
 GT : '>';
 LT : '<';
