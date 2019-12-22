@@ -257,15 +257,35 @@ public interface sjListener extends ParseTreeListener {
 	 */
 	void exitOp2(sjParser.Op2Context ctx);
 	/**
-	 * Enter a parse tree produced by {@link sjParser#endEx}.
+	 * Enter a parse tree produced by {@link sjParser#op3}.
 	 * @param ctx the parse tree
 	 */
-	void enterEndEx(sjParser.EndExContext ctx);
+	void enterOp3(sjParser.Op3Context ctx);
 	/**
-	 * Exit a parse tree produced by {@link sjParser#endEx}.
+	 * Exit a parse tree produced by {@link sjParser#op3}.
 	 * @param ctx the parse tree
 	 */
-	void exitEndEx(sjParser.EndExContext ctx);
+	void exitOp3(sjParser.Op3Context ctx);
+	/**
+	 * Enter a parse tree produced by {@link sjParser#op4}.
+	 * @param ctx the parse tree
+	 */
+	void enterOp4(sjParser.Op4Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link sjParser#op4}.
+	 * @param ctx the parse tree
+	 */
+	void exitOp4(sjParser.Op4Context ctx);
+	/**
+	 * Enter a parse tree produced by {@link sjParser#endExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterEndExpr(sjParser.EndExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link sjParser#endExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitEndExpr(sjParser.EndExprContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link sjParser#terminal}.
 	 * @param ctx the parse tree

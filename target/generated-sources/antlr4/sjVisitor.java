@@ -160,11 +160,23 @@ public interface sjVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitOp2(sjParser.Op2Context ctx);
 	/**
-	 * Visit a parse tree produced by {@link sjParser#endEx}.
+	 * Visit a parse tree produced by {@link sjParser#op3}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitEndEx(sjParser.EndExContext ctx);
+	T visitOp3(sjParser.Op3Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link sjParser#op4}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOp4(sjParser.Op4Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link sjParser#endExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEndExpr(sjParser.EndExprContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link sjParser#terminal}.
 	 * @param ctx the parse tree

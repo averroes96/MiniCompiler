@@ -28,19 +28,69 @@ public class QuadGenerator extends sjBaseListener {
         System.out.println("\nGenerated quads:\n");;
         System.out.println("------------------------------------------------");
         for (int i = 0; i < quads.size(); i++) {
-        	System.out.println("\n" + i + ": " + quads.get(i).toString());
+        	System.out.println("\nQ" + i + ": " + quads.get(i).toString());
         }
         System.out.println("\n------------------------------------------------");
     }
     
-    /*@Override public void exitAssignment(sjParser.AssignmentContext ctx) {
+    @Override public void exitAssignment(sjParser.AssignmentContext ctx) {
     	
         System.out.println("\nexitAssignment start: " +" head of stack is " + stack.getLast());
         String t = stack.removeLast();
         quads.add(new Quad(":=",t,"",ctx.ID().getText()));
         System.out.println("\nexitAssignment adding quad " + quads.get(quads.size()-1));    	
     		
-    }	*/
+    }
+    
+    @Override public void exitExpr(sjParser.ExprContext ctx)
+    {
+        if(ctx.expr() != null)
+        {
+            String t1 = stack.removeLast();
+            String t2 = stack.removeLast();
+            String temp = "Temp"+(++iterator);
+            quads.add(new Quad(ctx.op1().getText(),t2,t1,temp));
+            stack.add(temp);
+            System.out.println("exitExpr adding quad " + quads.get(quads.size()-1));
+        }
+        else
+        {
+            System.out.println("exitExpr head of stack is: " + stack.getLast()+ " stack size " + stack.size());
+        }
+    }
+
+    @Override public void exitT(sjParser.TContext ctx)
+    {
+        if(ctx.t() != null)
+        {
+            String t1 = stack.removeLast(),t2 = stack.removeLast();
+            String temp = "Temp"+(++iterator);
+            if(ctx.op2() != null)
+            	quads.add(new Quad(ctx.op2().getText(),t2,t1,temp));
+            if(ctx.op3() != null)
+            	quads.add(new Quad(ctx.op3().getText(),t2,t1,temp));
+            if(ctx.op4() != null)
+            	quads.add(new Quad(ctx.op4().getText(),t2,t1,temp));
+            stack.add(temp);
+            System.out.println("exitT adding quad " + quads.get(quads.size()-1));
+        }
+        else
+        {
+            System.out.println("exitT head of stack is: " + stack.getLast() + " stack size " + stack.size());
+        }
+    }
+
+    @Override public void exitEndExpr(sjParser.EndExprContext ctx)
+    {
+        if(ctx.expr() == null) {
+            stack.add(ctx.getText());
+            System.out.println("exitEndExpr: case exp == null adding "+ ctx.getText());
+        }
+        else
+        {
+            System.out.println("exitEndExpr: case exp = null adding nothing "+ stack.getLast());
+        }
+    }    
     
     @Override public void exitEls(sjParser.ElsContext ctx)
     {

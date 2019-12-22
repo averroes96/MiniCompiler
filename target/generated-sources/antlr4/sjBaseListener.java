@@ -315,13 +315,37 @@ public class sjBaseListener implements sjListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterEndEx(sjParser.EndExContext ctx) { }
+	@Override public void enterOp3(sjParser.Op3Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitEndEx(sjParser.EndExContext ctx) { }
+	@Override public void exitOp3(sjParser.Op3Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterOp4(sjParser.Op4Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOp4(sjParser.Op4Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterEndExpr(sjParser.EndExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitEndExpr(sjParser.EndExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

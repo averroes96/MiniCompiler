@@ -64,7 +64,7 @@ public class EvaluateListener extends sjBaseListener{
         {
             String varName = vars.getChild(0).getText();
             if(table.containsSymbol(varName)) {
-                errors.add("Double declaration of variable: " + varName);
+                errors.add("Double declaration of variable: " + varName + " at Line : " + ctx.start.getLine());
             }
             else
                 table.addSymbol(new SymbolTable.Symbol(varName,DECLARED,type,1));
@@ -95,19 +95,17 @@ public class EvaluateListener extends sjBaseListener{
         }
         else
         {
-            System.out.println(ctx.t().getText() + " type: " + getCtxType(ctx.t()) + " and " + ctx.expr().getText() + " type: " + getCtxType(ctx.expr()));
+            
             if(typesCompatible(getCtxType(ctx.t()),getCtxType(ctx.expr())))
                 addCtxType(ctx,getResultingType(getCtxType(ctx.t()),getCtxType(ctx.expr())));
             else {
                 addCtxType(ctx, 0); // type 0 will always generate error
-                System.out.println("incompatible type between " + ctx.t().getText() + " and " + ctx.expr().getText());
-                System.out.println(ctx.t().getText() + " type: " + getCtxType(ctx.t()) + " and " + ctx.expr().getText() + " type: " + getCtxType(ctx.expr()));
-            }
+                System.out.println("incompatible type between " + ctx.t().getText() + " and " + ctx.expr().getText()+ " at Line : " + ctx.start.getLine());            }
 
         }
     }
     
-    @Override public void exitEndEx(sjParser.EndExContext ctx)
+    @Override public void exitEndExpr(sjParser.EndExprContext ctx)
     {
         if(ctx.ID() != null)
             addCtxType(ctx,table.getSymbol(ctx.ID().getText()).type);
@@ -120,16 +118,14 @@ public class EvaluateListener extends sjBaseListener{
     @Override public void exitT(sjParser.TContext ctx)
     {
         if(ctx.t() == null)
-            addCtxType(ctx,getCtxType(ctx.endEx()));
+            addCtxType(ctx,getCtxType(ctx.endExpr()));
         else
         {
-            System.out.println(ctx.t().getText() + " type: " + getCtxType(ctx.t()) + " and " + ctx.endEx().getText() + " type: " + getCtxType(ctx.endEx()));
-            if(typesCompatible(getCtxType(ctx.endEx()),getCtxType(ctx.t())))
-                addCtxType(ctx,getResultingType(getCtxType(ctx.t()),getCtxType(ctx.endEx())));
+            if(typesCompatible(getCtxType(ctx.endExpr()),getCtxType(ctx.t())))
+                addCtxType(ctx,getResultingType(getCtxType(ctx.t()),getCtxType(ctx.endExpr())));
             else {
                 addCtxType(ctx, 0); // type 0 will always generate error
-                System.out.println("incompatible type between " + ctx.t().getText() + " and " + ctx.endEx().getText());
-                System.out.println(ctx.t().getText() + " type: " + getCtxType(ctx.t()) + " and " + ctx.endEx().getText() + " type: " + getCtxType(ctx.endEx()));
+                System.out.println("incompatible type between " + ctx.t().getText() + " and " + ctx.endExpr().getText() + " at Line : " + ctx.start.getLine());
             }
         }
     }    
@@ -140,7 +136,7 @@ public class EvaluateListener extends sjBaseListener{
     	
     	String id = ctx.ID().getText();
     	if(!table.containsSymbol(id)) {
-    		errors.add("Variable " + id + " has not been declared");
+    		errors.add("Variable " + id + " has not been declared" + " at Line : " + ctx.start.getLine());
     		table.addSymbol(new SymbolTable.Symbol(id,UNDECLARED,INT|FLOAT,1));
     		// to not generate the same error
     	}
@@ -151,7 +147,7 @@ public class EvaluateListener extends sjBaseListener{
         
     	}
     	else {
-    		errors.add("Library small_java.lang is not defined !");
+    		errors.add("Library small_java.lang is not defined !" + " at Line : " + ctx.start.getLine());
     	}
     	
     }	
@@ -159,7 +155,7 @@ public class EvaluateListener extends sjBaseListener{
     @Override public void exitIf_statement(sjParser.If_statementContext ctx) {
     	
     	if(lang == 0) {
-    		errors.add("Library small_java.lang is not defined !");    		
+    		errors.add("Library small_java.lang is not defined !" + " at Line : " + ctx.start.getLine());    		
     	}
     	
     }
@@ -167,7 +163,7 @@ public class EvaluateListener extends sjBaseListener{
     @Override public void exitOutput(sjParser.OutputContext ctx) {
     	
     	if(io == 0) {
-    		errors.add("Library small_java.io is not defined !");
+    		errors.add("Library small_java.io is not defined !" + " at Line : " + ctx.start.getLine());
     		
     	}
     	
@@ -179,24 +175,24 @@ public class EvaluateListener extends sjBaseListener{
     	String ID = ctx.ID().getText();
     	
     	if(!table.containsSymbol(ID)) {
-    		errors.add("Variable " + ID + " has not been declared");
+    		errors.add("Variable " + ID + " has not been declared" + " at Line : " + ctx.start.getLine());
     		table.addSymbol(new SymbolTable.Symbol(ID,UNDECLARED,INT|FLOAT|STRING,1));
     		// to not generate the same error
     	}
     	else {
     		if(table.getSymbol(ID).type == INT) {
     			if(!text.contains("%d")) {
-    				errors.add("Incompatible type conversion ! " + ID + " is of type INT");
+    				errors.add("Incompatible type conversion ! " + ID + " is of type INT" + " at Line : " + ctx.start.getLine());
     			}
     		}
     		if(table.getSymbol(ID).type == FLOAT) {
     			if(!text.contains("%f")) {
-    				errors.add("Incompatible type conversion ! " + ID + " is of type FLOAT");
+    				errors.add("Incompatible type conversion ! " + ID + " is of type FLOAT" + " at Line : " + ctx.start.getLine());
     			}
     		}
     		if(table.getSymbol(ID).type == STRING) {
     			if(!text.contains("%s")) {
-    				errors.add("Incompatible type conversion ! " + ID + " is of type STRING");
+    				errors.add("Incompatible type conversion ! " + ID + " is of type STRING"+ " at Line : " + ctx.start.getLine());
     			}
     		}     		
     	}
@@ -209,28 +205,28 @@ public class EvaluateListener extends sjBaseListener{
     	String ID = ctx.ID().getText();
     	
     	if(io == 0) {
-    		errors.add("Library small_java.io is not defined !");   		
+    		errors.add("Library small_java.io is not defined !" + " at Line : " + ctx.start.getLine());   		
     	}
     	if(!table.containsSymbol(ID)) {
-    		errors.add("Variable " + ID + " has not been declared");
+    		errors.add("Variable " + ID + " has not been declared" + " at Line : " + ctx.start.getLine());
     		table.addSymbol(new SymbolTable.Symbol(ID,UNDECLARED,INT|FLOAT|STRING,1));
     		// to not generate the same error
     	}
     	else {
     		if(ctx.format().getText().equals("int_sj")) {
     			if(table.getSymbol(ID).type != INT) {
-    				errors.add("Incompatible types conversion for variable : " + ID);
+    				errors.add("Incompatible types conversion for variable : " + ID + " at Line : " + ctx.start.getLine());
     			}
 
     		}
     		if(ctx.format().getText().equals("float_sj")) {
     			if(table.getSymbol(ID).type != FLOAT) {
-    				errors.add("Incompatible types conversion for variable : " + ID);
+    				errors.add("Incompatible types conversion for variable : " + ID+ " at Line : " + ctx.start.getLine());
     			}
     		}
     		if(ctx.format().getText().equals("string_sj")) {
     			if(table.getSymbol(ID).type != STRING) {
-    				errors.add("Incompatible types conversion for variable : " + ID);
+    				errors.add("Incompatible types conversion for variable : " + ID+ " at Line : " + ctx.start.getLine());
     			}
     		}
     		
@@ -243,7 +239,7 @@ public class EvaluateListener extends sjBaseListener{
     	if(ctx.ID() != null) {
     		addCtxType(ctx,table.getSymbol(ctx.ID().getText()).type);
     	}
-    	else if(ctx.STRING() != null) {
+    	else if(ctx.TEXT() != null) {
     		addCtxType(ctx,STRING);    		
     	}
     	else if(ctx.INT() != null) {
@@ -278,7 +274,12 @@ public class EvaluateListener extends sjBaseListener{
     }    
     private static int getResultingType(int t1,int t2)
     {
-        return ((t1 & t2 & INT) != 0)?INT:FLOAT;
+        if((t1 & t2 & INT) != 0)
+        	return INT ;
+        if((t1 & t2 & STRING) != 0)
+        	return STRING ;
+        else
+        	return FLOAT ;
     }
     
 }

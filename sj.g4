@@ -107,27 +107,34 @@ format
  ;  
  
 expr 
- : expr op1 t 
+ : expr op1 t
  | t
  ;
  
 t 
- : t op2 endEx 
- | endEx
+ : t op2 endExpr 
+ | t op3 endExpr
+ | t op4 endExpr 
+ | endExpr
  ;
  
 op1 
- : PLUS 
- | MINUS 
+ : PLUS | MINUS 
  ;
  
 op2 
- : MULT 
- | DIV 
- | MOD
+ : MULT | DIV | MOD
  ;
  
-endEx 
+op3
+ : LTEQ | GTEQ | LT | GT 
+ ;
+ 
+op4
+ : EQ | NEQ
+ ; 
+ 
+endExpr 
  : ID 
  | '(' expr ')' 
  | terminal 
@@ -135,7 +142,7 @@ endEx
  
 terminal 
  :ID
- |INT | FLOAT | STRING 
+ |INT | FLOAT | TEXT 
  ; 
 
 OR : '||';

@@ -20,7 +20,16 @@ public class SymbolTable {
         public String toString()
         {
             String dec = (declared == 1)? "Declared":"Undeclared";
-            return "var: " + name + " type: " + ((type==1)?"int":"float") + " var status: " + dec;
+            String message;
+            message = "var: " + name + " type: ";
+            
+            if(type == 1) message += "int_sj" ;
+            else if(type == 2) message += "float_sj" ;
+            else message += "string_sj" ;
+            
+            message += " var status: " + dec;
+            
+            return message;
         }
     }
 
