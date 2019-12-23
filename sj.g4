@@ -92,7 +92,7 @@ content
  ;
  
 varText
- : TEXT ',' ID
+ : TEXT ',' (ID)+
  ; 
   
  

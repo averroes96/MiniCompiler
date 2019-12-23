@@ -14,7 +14,7 @@ protected class_SJ SmallJava {
       
       Si ( x > 25 ) Alors {
       
-      	Out_SJ("x value is %d", x);
+      	Out_SJ("x %s value is %d", str x );
       	
       }
       Sinon

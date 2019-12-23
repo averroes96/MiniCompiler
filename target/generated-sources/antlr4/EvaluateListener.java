@@ -1,5 +1,10 @@
 import java.util.LinkedList;
+import java.util.List;
+
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.TerminalNode;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class EvaluateListener extends sjBaseListener{
@@ -13,6 +18,7 @@ public class EvaluateListener extends sjBaseListener{
     SymbolTable table = new SymbolTable();
     private LinkedList<String> errors = new LinkedList<>();
     private HashMap<ParserRuleContext,Integer> types = new HashMap<>();
+    private ArrayList<String> output = new ArrayList<>();
     private int lang = 0;
     private int io = 0;
     
@@ -34,6 +40,11 @@ public class EvaluateListener extends sjBaseListener{
             	System.out.println("\n" + table.getSymbol(i).toString());
             }
             System.out.println("******************************************************");
+            /*
+            System.out.println("OUTPUT -----------------------------------------------");
+            for(String str : output) {
+            	System.out.println("\n" + str);
+            }	*/
         }
         else
         {
@@ -166,38 +177,81 @@ public class EvaluateListener extends sjBaseListener{
     		errors.add("Library small_java.io is not defined !" + " at Line : " + ctx.start.getLine());
     		
     	}
+    	/*
+    	else
+    	{
+    		
+    		if(ctx.content().TEXT() != null) {
+    			output.add(ctx.content().TEXT().getText());
+    		}
+    		
+    		if(ctx.content().varText() != null) {
+    			String text = ctx.content().varText().TEXT().getText();
+    			List<TerminalNode> ids = ctx.content().varText().ID();
+    			int index = 0;
+    			for(int i = 0; i < text.length()-1; i++) {
+    				
+    	    		if(text.charAt(i) == '%' && ( text.charAt(i+1) == 'd' || text.charAt(i+1) == 's' || text.charAt(i+1) == 'f')) {
+        				text.replace(""+text.charAt(i)+text.charAt(i+1), ids.get(index).getText());
+        				index++;
+        		}
+    			}
+    			
+    			output.add(text);
+    		}
+    		
+    	}	*/
     	
     }
     
     @Override public void exitVarText(sjParser.VarTextContext ctx) {
     	
     	String text = ctx.TEXT().getText();
-    	String ID = ctx.ID().getText();
+    	List<TerminalNode> ids = ctx.ID() ;
+    	ArrayList<String> varType = new ArrayList<>();
+    	int cpt1=0,cpt2=0;
     	
-    	if(!table.containsSymbol(ID)) {
-    		errors.add("Variable " + ID + " has not been declared" + " at Line : " + ctx.start.getLine());
-    		table.addSymbol(new SymbolTable.Symbol(ID,UNDECLARED,INT|FLOAT|STRING,1));
-    		// to not generate the same error
-    	}
-    	else {
-    		if(table.getSymbol(ID).type == INT) {
-    			if(!text.contains("%d")) {
-    				errors.add("Incompatible type conversion ! " + ID + " is of type INT" + " at Line : " + ctx.start.getLine());
-    			}
+    	for(int i = 0; i < text.length()-1; i++) {
+    		if(text.charAt(i) == '%' && ( text.charAt(i+1) == 'd' || text.charAt(i+1) == 's' || text.charAt(i+1) == 'f')) {
+    				cpt1++;
+    				varType.add("%" + text.charAt(i+1));
     		}
-    		if(table.getSymbol(ID).type == FLOAT) {
-    			if(!text.contains("%f")) {
-    				errors.add("Incompatible type conversion ! " + ID + " is of type FLOAT" + " at Line : " + ctx.start.getLine());
-    			}
-    		}
-    		if(table.getSymbol(ID).type == STRING) {
-    			if(!text.contains("%s")) {
-    				errors.add("Incompatible type conversion ! " + ID + " is of type STRING"+ " at Line : " + ctx.start.getLine());
-    			}
-    		}     		
     	}
     	
     	
+    	
+    	if( cpt1 == ids.size() ) {
+    		
+    		for(int i = 0; i < ids.size(); i++) {
+    		
+    		String ID = ids.get(i).getText();	
+    			
+	    	if(!table.containsSymbol(ID)) {
+	    		errors.add("Variable " + ID + " has not been declared" + " at Line : " + ctx.start.getLine());
+	    		table.addSymbol(new SymbolTable.Symbol(ID,UNDECLARED,INT|FLOAT|STRING,1));
+	    		// to not generate the same error
+	    	}
+	    	else {
+	    		if(table.getSymbol(ID).type == INT) {
+	    			if(!varType.get(i).equals("%d")) {
+	    				errors.add("Incompatible type conversion ! " + ID + " is of type INT" + " at Line : " + ctx.start.getLine());
+	    			}
+	    		}
+	    		if(table.getSymbol(ID).type == FLOAT) {
+	    			if(!varType.get(i).equals("%f")) {
+	    				errors.add("Incompatible type conversion ! " + ID + " is of type FLOAT" + " at Line : " + ctx.start.getLine());
+	    			}
+	    		}
+	    		if(table.getSymbol(ID).type == STRING) {
+	    			if(!varType.get(i).equals("%s")) {
+	    				errors.add("Incompatible type conversion ! " + ID + " is of type STRING"+ " at Line : " + ctx.start.getLine());
+	    			}
+	    		}
+	    	}
+    		}
+    	}
+    	else
+    		errors.add("Number of defined parameters does not equal number of given variables at line : " + ctx.start.getLine());
     }    
     
     @Override public void exitInput(sjParser.InputContext ctx) {
