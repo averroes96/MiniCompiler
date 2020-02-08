@@ -4,15 +4,19 @@
 grammar sj;
 // the general grammar syntax
 program
- : libraries* klass OBRACE varDec* main_sj CBRACE EOF
+ : libraries* klass 
+ 	OBRACE 
+ 		varDec*  main_sj 
+ 	CBRACE 
+ 	EOF
  ;
  
 libraries
- : 'import' bibname SCOL
+ : IMPORT bibname SCOL
  ; 
  
 main_sj
- : 'main_SJ' OBRACE block CBRACE
+ : SJMAIN OBRACE block CBRACE
  ; 
 
 // block syntax
@@ -28,8 +32,8 @@ bibname
  
  
  klass
- : 'class_SJ' ID        
- | modifier 'class_SJ' ID
+ : SJCLASS ID        
+ | modifier SJCLASS ID
  ;
  
  varDec
@@ -51,6 +55,7 @@ bibname
  modifier
  : PROTECTED
  | PUBLIC
+ |
  ;
  
 statement
@@ -66,16 +71,24 @@ assignment
  ;
 
 if_statement
- : 'Si' condition_block ( els statement_block)*
+ : IF condition_block ( els statement_block)*
  ;
  
 els 
- : 'Sinon'
+ : ELSE
  ; 
 
 condition_block
- : expr 'Alors' statement_block
+ : OPAR comparaison CPAR 'Alors' statement_block
  ;
+ 
+comparaison
+ : expr operator expr
+ ;
+ 
+operator
+ : LTEQ | GTEQ | LT | GT | EQ | NEQ | NOT | OR | AND
+ ;    
 
 statement_block
  : OBRACE block CBRACE
@@ -83,7 +96,7 @@ statement_block
  ;
 
 output
- : 'Out_SJ' OPAR content  CPAR SCOL
+ : OUTSJ OPAR content  CPAR SCOL
  ;
  
 content
@@ -97,7 +110,7 @@ varText
   
  
 input
- : 'In_SJ' OPAR '"' format '",' ID OPAR SCOL
+ : INSJ OPAR '"' format '",' ID OPAR SCOL
  ;
  
 format
@@ -113,8 +126,6 @@ expr
  
 t 
  : t op2 endExpr 
- | t op3 endExpr
- | t op4 endExpr 
  | endExpr
  ;
  
@@ -124,20 +135,13 @@ op1
  
 op2 
  : MULT | DIV | MOD
- ;
- 
-op3
- : LTEQ | GTEQ | LT | GT 
- ;
- 
-op4
- : EQ | NEQ
  ; 
  
 endExpr 
  : ID 
  | '(' expr ')' 
- | terminal 
+ | terminal
+ | 
  ;
  
 terminal 
@@ -145,8 +149,8 @@ terminal
  |INT | FLOAT | TEXT 
  ; 
 
-OR : '||';
-AND : '&&';
+OR : '|';
+AND : '&';
 EQ : '=';
 NEQ : '!=';
 GT : '>';
@@ -168,21 +172,15 @@ CPAR : ')';
 OBRACE : '{';
 CBRACE : '}';
 
-TRUE : 'true';
-FALSE : 'false';
-NIL : 'nil';
-IF : 'if';
-ELSE : 'else';
-WHILE : 'while';
-PRINT : 'print';
-PROGRAM : 'program';
-DEC : 'declare';
-BEGIN : 'begin';
-END : 'end';
+IF : 'Si';
+ELSE : 'Sinon';
 IMPORT : 'import';
 IMPORTLANG : 'small_java.lang';
 IMPORTIO : 'small_java.io';
 SJCLASS : 'class_SJ';
+SJMAIN : 'main_SJ' ;
+INSJ : 'In_SJ' ;
+OUTSJ : 'Out_SJ' ;
 PROTECTED : 'protected';
 PUBLIC : 'public';
 
@@ -192,7 +190,6 @@ STRING : 'string_sj';
 INT_SJ : '%d';
 FLOAT_SJ : '%f';
 STRING_SJ : '%s';
-CONST : 'constant';
 
 ID
  : [a-zA-Z_] [a-zA-Z_0-9]*

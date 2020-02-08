@@ -14,20 +14,22 @@ public class SymbolTable {
         String name;
         int declared; 
         int type; 
-        int size; 
+        int size;
 
         @Override
         public String toString()
         {
-            String dec = (declared == 1)? "Declared":"Undeclared";
+            String dec = (declared == 1)? "  Declared  ":" Undeclared ";
             String message;
-            message = "var: " + name + " type: ";
+            message = "   " + name + "   " ;
             
-            if(type == 1) message += "int_sj" ;
-            else if(type == 2) message += "float_sj" ;
-            else message += "string_sj" ;
+            if(type == 1) message += "|  int_sj  |" ;
+            else if(type == 2) message += "| float_sj |" ;
+            else if(type == 3 ) message += "| string_sj|" ;
+            else	message += "|  keyword  |" ;
             
-            message += " var status: " + dec;
+            message += dec + " | ";
+            
             
             return message;
         }

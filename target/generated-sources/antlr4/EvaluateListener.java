@@ -1,5 +1,6 @@
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -13,14 +14,12 @@ public class EvaluateListener extends sjBaseListener{
     private static final int UNDECLARED = 2;
     private static final int FLOAT = 2;
     private static final int INT = 1;
-    private static final int STRING = 3;    
+    private static final int STRING = 3;
+    private static final int KEYWORD = 4;
 
     SymbolTable table = new SymbolTable();
-    private LinkedList<String> errors = new LinkedList<>();
-    private HashMap<ParserRuleContext,Integer> types = new HashMap<>();
-    private ArrayList<String> output = new ArrayList<>();
-    private int lang = 0;
-    private int io = 0;
+    public LinkedList<String> errors = new LinkedList<>();
+    private HashMap<ParserRuleContext,Integer> types = new HashMap<>();   
     
     public LinkedList<String> getErrors() {
         return errors;
@@ -28,31 +27,38 @@ public class EvaluateListener extends sjBaseListener{
     
     @Override public void exitProgram(sjParser.ProgramContext ctx)
     {
-    	if(!Character.isUpperCase(ctx.klass().ID().getText().charAt(0))) {
-    		errors.add("Class name must start with a capital letter !");
-    	}
+
     	
         if(errors.size() == 0) { // no errors
             System.out.println("Program compiled without errors!");
-            System.out.println("\nsymbols table: ");
-            System.out.println("******************************************************");
+            System.out.println("\n---------- Start generating Symbols table ----------\n");
+            System.out.println("-----------------|----------|------------|");            
+            System.out.println("       Var       |   Type   |   Status   |");
+            System.out.println("-----------------|----------|------------|");
             for (int i = 0; i < table.getSize(); i++) {
             	System.out.println("\n" + table.getSymbol(i).toString());
             }
-            System.out.println("******************************************************");
-            /*
-            System.out.println("OUTPUT -----------------------------------------------");
-            for(String str : output) {
-            	System.out.println("\n" + str);
-            }	*/
+            System.out.println("\n---------- Finished generating Symbols table ----------");
+            
+           
         }
         else
         {
-            System.out.println("Program compiled with the following errors :");
+            System.out.println("\n\nProgram compiled with the following errors :-------------------------------");
             for (int i = 0; i < errors.size(); i++) {
                 System.out.println("\n" + errors.get(i));
             }
         }
+    }
+    
+    @Override public void exitKlass(sjParser.KlassContext ctx) {
+    	
+    	if(!Character.isUpperCase(ctx.ID().getText().charAt(0))) {
+    		errors.add("Class name must start with a capital letter !");
+    	}
+    	
+    	table.addSymbol(new SymbolTable.Symbol(ctx.ID().getText(),DECLARED,KEYWORD,1));    	
+    	
     }
     
     @Override public void exitVarDec(sjParser.VarDecContext ctx)
@@ -89,10 +95,8 @@ public class EvaluateListener extends sjBaseListener{
     	
     	String bibname = ctx.bibname().getText();
     	
-    	if(bibname.equals("small_java.lang"))
-    		lang = 1;
-    	else if(bibname.equals("small_java.io"))
-    		io = 1;
+    	if(bibname.equals("small_java.lang") || bibname.equals("small_java.io"))
+    		table.addSymbol(new SymbolTable.Symbol(bibname,DECLARED,KEYWORD,1));
     	else
     		errors.add("No such library name : " + bibname);
 	
@@ -107,43 +111,61 @@ public class EvaluateListener extends sjBaseListener{
         else
         {
             
-            if(typesCompatible(getCtxType(ctx.t()),getCtxType(ctx.expr())))
+            if(typesCompatible(getCtxType(ctx.t()),getCtxType(ctx.expr()))) {
+            	
                 addCtxType(ctx,getResultingType(getCtxType(ctx.t()),getCtxType(ctx.expr())));
+
+            }
             else {
-                addCtxType(ctx, 0); // type 0 will always generate error
-                System.out.println("incompatible type between " + ctx.t().getText() + " and " + ctx.expr().getText()+ " at Line : " + ctx.start.getLine());            }
+                addCtxType(ctx, 0);
+                errors.add("incompatible type between " + ctx.t().getText() + " and " + ctx.expr().getText()+ " at Line : " + ctx.start.getLine());            }
 
         }
     }
     
     @Override public void exitEndExpr(sjParser.EndExprContext ctx)
     {
-        if(ctx.ID() != null)
+        if(ctx.ID() != null ) {
+        	if(table.containsSymbol(ctx.ID().getText()))
             addCtxType(ctx,table.getSymbol(ctx.ID().getText()).type);
-        else if(ctx.expr() != null)
+        	else {
+        	addCtxType(ctx,-1);
+        	errors.add("Variable " + ctx.ID().getText() + " is undefined at line : " + ctx.start.getLine());
+        	}
+
+        }
+        else if(ctx.expr() != null) {
             addCtxType(ctx,getCtxType(ctx.expr()));
-        else
+        	System.out.println("it's endExpr expr");
+        }
+        else {
             addCtxType(ctx,getCtxType(ctx.terminal()));
+        }
     }
     
     @Override public void exitT(sjParser.TContext ctx)
     {
-        if(ctx.t() == null)
+        if(ctx.t() == null) {
             addCtxType(ctx,getCtxType(ctx.endExpr()));
+
+        }
         else
         {
-            if(typesCompatible(getCtxType(ctx.endExpr()),getCtxType(ctx.t())))
-                addCtxType(ctx,getResultingType(getCtxType(ctx.t()),getCtxType(ctx.endExpr())));
+            if(typesCompatible(getCtxType(ctx.endExpr()),getCtxType(ctx.t()))) {
+                addCtxType(ctx,getResultingType(getCtxType(ctx.t()),getCtxType(ctx.endExpr())));            	
+            }
             else {
                 addCtxType(ctx, 0); // type 0 will always generate error
-                System.out.println("incompatible type between " + ctx.t().getText() + " and " + ctx.endExpr().getText() + " at Line : " + ctx.start.getLine());
+                errors.add("incompatible type between " + ctx.t().getText() + " and " + ctx.endExpr().getText() + " at Line : " + ctx.start.getLine());
             }
         }
     }    
     
     @Override public void exitAssignment(sjParser.AssignmentContext ctx) {
     	
-    	if(lang == 1) {
+    	ParserRuleContext expr = ctx.expr();
+    	
+    	if(table.containsSymbol("small_java.lang")) {
     	
     	String id = ctx.ID().getText();
     	if(!table.containsSymbol(id)) {
@@ -155,6 +177,7 @@ public class EvaluateListener extends sjBaseListener{
             errors.add("Incompatible types in affectation " + ctx.getText());
         	clearMap();
         }
+
         
     	}
     	else {
@@ -165,7 +188,7 @@ public class EvaluateListener extends sjBaseListener{
     
     @Override public void exitIf_statement(sjParser.If_statementContext ctx) {
     	
-    	if(lang == 0) {
+    	if(!table.containsSymbol("small_java.lang")) {
     		errors.add("Library small_java.lang is not defined !" + " at Line : " + ctx.start.getLine());    		
     	}
     	
@@ -173,34 +196,10 @@ public class EvaluateListener extends sjBaseListener{
     
     @Override public void exitOutput(sjParser.OutputContext ctx) {
     	
-    	if(io == 0) {
+    	if(!table.containsSymbol("small_java.io")) {
     		errors.add("Library small_java.io is not defined !" + " at Line : " + ctx.start.getLine());
     		
     	}
-    	/*
-    	else
-    	{
-    		
-    		if(ctx.content().TEXT() != null) {
-    			output.add(ctx.content().TEXT().getText());
-    		}
-    		
-    		if(ctx.content().varText() != null) {
-    			String text = ctx.content().varText().TEXT().getText();
-    			List<TerminalNode> ids = ctx.content().varText().ID();
-    			int index = 0;
-    			for(int i = 0; i < text.length()-1; i++) {
-    				
-    	    		if(text.charAt(i) == '%' && ( text.charAt(i+1) == 'd' || text.charAt(i+1) == 's' || text.charAt(i+1) == 'f')) {
-        				text.replace(""+text.charAt(i)+text.charAt(i+1), ids.get(index).getText());
-        				index++;
-        		}
-    			}
-    			
-    			output.add(text);
-    		}
-    		
-    	}	*/
     	
     }
     
@@ -209,7 +208,7 @@ public class EvaluateListener extends sjBaseListener{
     	String text = ctx.TEXT().getText();
     	List<TerminalNode> ids = ctx.ID() ;
     	ArrayList<String> varType = new ArrayList<>();
-    	int cpt1=0,cpt2=0;
+    	int cpt1=0;
     	
     	for(int i = 0; i < text.length()-1; i++) {
     		if(text.charAt(i) == '%' && ( text.charAt(i+1) == 'd' || text.charAt(i+1) == 's' || text.charAt(i+1) == 'f')) {
@@ -258,7 +257,7 @@ public class EvaluateListener extends sjBaseListener{
     	
     	String ID = ctx.ID().getText();
     	
-    	if(io == 0) {
+    	if(!table.containsSymbol("small_java.lang")) {
     		errors.add("Library small_java.io is not defined !" + " at Line : " + ctx.start.getLine());   		
     	}
     	if(!table.containsSymbol(ID)) {
@@ -291,13 +290,14 @@ public class EvaluateListener extends sjBaseListener{
     @Override public void exitTerminal(sjParser.TerminalContext ctx) {
     	
     	if(ctx.ID() != null) {
-    		addCtxType(ctx,table.getSymbol(ctx.ID().getText()).type);
+    		addCtxType(ctx,table.getSymbol(ctx.ID().getText()).type);   		
     	}
     	else if(ctx.TEXT() != null) {
-    		addCtxType(ctx,STRING);    		
+    		addCtxType(ctx,STRING);
     	}
     	else if(ctx.INT() != null) {
-    		addCtxType(ctx,INT);    		
+    		addCtxType(ctx,INT);   		
+            	    		
     	}
     	else if(ctx.FLOAT() != null) {
     		addCtxType(ctx,FLOAT);
@@ -325,7 +325,9 @@ public class EvaluateListener extends sjBaseListener{
     private void addCtxType(ParserRuleContext ctx, int type)
     {
         types.put(ctx,type);
-    }    
+    }
+    
+  
     private static int getResultingType(int t1,int t2)
     {
         if((t1 & t2 & INT) != 0)

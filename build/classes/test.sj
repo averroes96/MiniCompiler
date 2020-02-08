@@ -8,21 +8,15 @@ protected class_SJ SmallJava {
       string_sj str ;
       
     main_SJ{
-
-      x :=  x * 5 ;
-      str := "hello world" ;
+    
+    	x := 8;
+    	
+    	z := 8 / x ;
+    	
+    	y := 3.0;
       
-      Si ( x > 25 ) Alors {
-      
-      	Out_SJ("x %s value is %d", str x );
-      	
-      }
-      Sinon
-      	
-	 	Out_SJ("x is too short");
-      	
-      
-      
+      str := "ssss";
 
     }
+    
 }
